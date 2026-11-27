@@ -1,23 +1,32 @@
-// One Word From Your Ex — make.fun bounty entry.
-//
-// The program writes exactly one word to /output/entry.txt:
-// the word the entrant's ex would use to describe them.
-//
-// The word: "Exhausting".
-// Why this word: it is a real word an ex would actually say about a
-// former partner ("dating him was exhausting"), it lands instantly with
-// no explanation needed, it is painfully honest self-deprecation rather
-// than a generic insult, and it is relatable — most people have either
-// been the exhausting one or dated one. The sting is the joke: the
-// entrant plainly knows it, and the judge can picture the ex sighing
-// it. No near-synonym ("tiring", "draining") carries the same weary,
-// end-of-the-relationship finality.
-
+// makefun anchor b66964b617780e597073aa8ec71360c202bb2394 round 34239920
 import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 
-const WORD = "Exhausting";
+const ENTRY_TEXT = "Exhausting";
+const MIN_LENGTH = 1;
+const MAX_LENGTH = 200;
 
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
-mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, "entry.txt"), WORD, "utf8");
+const OUTPUT_DIR = "/output";
+const OUTPUT_PATH = `${OUTPUT_DIR}/entry.txt`;
+
+function validateLength(text: string): void {
+  if (text.length < MIN_LENGTH || text.length > MAX_LENGTH) {
+    throw new Error(
+      `entry length must be ${MIN_LENGTH}-${MAX_LENGTH} characters, got ${text.length}`,
+    );
+  }
+}
+
+function guardEntry(text: string): void {
+  validateLength(text);
+  if (OUTPUT_PATH.length === 0) {
+    throw new Error("output path must not be empty");
+  }
+}
+
+function writeEntry(text: string): void {
+  guardEntry(text);
+  mkdirSync(OUTPUT_DIR, { recursive: true });
+  writeFileSync(OUTPUT_PATH, text, "utf8");
+}
+
+writeEntry(ENTRY_TEXT);
